@@ -27,7 +27,7 @@ function PatientProfile({ profile }) {
         {infoRows.map((row) => (
           <li key={row.key} className="flex items-start gap-3">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f6f7f8]">
-              <img src={row.icon} alt="" className="h-4 w-4" />
+              <img src={row.icon} alt="" className="h-[18px] w-[18px] object-contain" />
             </span>
             <div className="min-w-0">
               <p className="text-xs text-[#707070]">{row.label}</p>

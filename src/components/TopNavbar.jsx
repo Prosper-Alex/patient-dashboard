@@ -16,34 +16,34 @@ const navItems = [
 
 function TopNavbar({ doctorImage }) {
   return (
-    <header className="rounded-3xl bg-white px-3 py-2 shadow-[0_2px_10px_rgba(0,0,0,0.04)] sm:px-4 lg:h-18.5lg:rounded-[70px] lg:px-5 lg:py-0">
-      <div className="flex h-full flex-wrap items-center justify-between gap-2 lg:flex-nowrap lg:gap-3">
+    <header className="rounded-3xl bg-white px-3 py-2 shadow-[0_2px_10px_rgba(0,0,0,0.04)] sm:px-4 lg:h-[74px] lg:rounded-[70px] lg:px-5 lg:py-0">
+      <div className="flex h-full flex-wrap items-center justify-between gap-2 lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-3">
         <div className="flex min-w-0 items-center gap-3 sm:gap-6 lg:gap-8">
           <img
             src="/testcare.svg"
             alt="Tech.Care"
             className="h-7 w-auto shrink-0 sm:h-8"
           />
-
-          <nav className="hidden xl:block">
-            <ul className="flex items-center gap-2">
-              {navItems.map((item) => (
-                <li key={item.label}>
-                  <button
-                    type="button"
-                    className={`flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold ${
-                      item.active
-                        ? "bg-[#01f0d0] text-[#072635]"
-                        : "text-[#072635] hover:bg-[#f1f5f9]"
-                    }`}>
-                    <img src={item.icon} alt="" className="h-3.5 w-3.5" />
-                    <span>{item.label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
+
+        <nav className="hidden xl:flex xl:justify-center">
+          <ul className="flex items-center gap-2">
+            {navItems.map((item) => (
+              <li key={item.label}>
+                <button
+                  type="button"
+                  className={`flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold ${
+                    item.active
+                      ? "bg-[#01f0d0] text-[#072635]"
+                      : "text-[#072635] hover:bg-[#f1f5f9]"
+                  }`}>
+                  <img src={item.icon} alt="" className="h-3.5 w-3.5" />
+                  <span>{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-3">
           <div className="hidden items-center gap-2 md:flex">
