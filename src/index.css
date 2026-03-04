@@ -1,0 +1,46 @@
+@import 'tailwindcss';
+
+:root {
+  font-family: 'Manrope', 'Inter', 'Segoe UI', sans-serif;
+  color: #072635;
+  background-color: #f6f7f8;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.dashboard-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cfd4dc #f3f4f6;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 9999px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb {
+  background: #cfd4dc;
+  border-radius: 9999px;
+}
+
+.dashboard-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #b3bcc8;
+}
