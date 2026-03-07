@@ -7,14 +7,17 @@ import verticalDotIcon from "../assets/icons/verticaldot.svg";
 import homeIcon from "../assets/icons/home.svg";
 
 const navItems = [
-  { label: "Overview", icon: homeIcon },
-  { label: "Patients", icon: femaleIcon, active: true },
+  { label: "Overview", icon: homeIcon, href: "/premium-overview" },
+  { label: "Patients", icon: femaleIcon, href: "/" },
   { label: "Schedule", icon: calendarIcon },
   { label: "Message", icon: chatIcon },
   { label: "Transactions", icon: cardIcon },
 ];
 
 function TopNavbar({ doctorImage }) {
+  const currentPath =
+    typeof window !== "undefined" ? window.location.pathname : "/";
+
   return (
     <header className="rounded-3xl bg-white px-3 py-2 shadow-[0_2px_10px_rgba(0,0,0,0.04)] sm:px-4 lg:h-[74px] lg:rounded-[70px] lg:px-5 lg:py-0">
       <div className="flex h-full flex-wrap items-center justify-between gap-2 lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-3">
@@ -28,30 +31,46 @@ function TopNavbar({ doctorImage }) {
 
         <nav className="hidden xl:flex xl:justify-center">
           <ul className="flex items-center gap-2">
-            {navItems.map((item) => (
-              <li key={item.label}>
-                <button
-                  type="button"
-                  className={`flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold ${
-                    item.active
-                      ? "bg-[#01f0d0] text-[#072635]"
-                      : "text-[#072635] hover:bg-[#f1f5f9]"
-                  }`}>
-                  <img src={item.icon} alt="" className="h-3.5 w-3.5" />
-                  <span>{item.label}</span>
-                </button>
-              </li>
-            ))}
+            {navItems.map((item) => {
+              const isActive = item.href ? item.href === currentPath : false;
+              const className = `flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold ${
+                isActive
+                  ? "bg-[#01f0d0] text-[#072635]"
+                  : "text-[#072635] hover:bg-[#f1f5f9]"
+              }`;
+
+              return (
+                <li key={item.label}>
+                  {item.href ? (
+                    <a href={item.href} className={className}>
+                      <img src={item.icon} alt="" className="h-3.5 w-3.5" />
+                      <span>{item.label}</span>
+                    </a>
+                  ) : (
+                    <button type="button" className={className}>
+                      <img src={item.icon} alt="" className="h-3.5 w-3.5" />
+                      <span>{item.label}</span>
+                    </button>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </nav>
 
         <div className="flex items-center gap-1.5 sm:gap-3">
           <div className="hidden items-center gap-2 md:flex">
-            <img
-              src={doctorImage}
-              alt="Doctor profile"
-              className="h-9 w-9 rounded-full border border-[#e5e7eb] object-cover lg:h-10 lg:w-10"
-            />
+            {doctorImage ? (
+              <img
+                src={doctorImage}
+                alt="Doctor profile"
+                className="h-9 w-9 rounded-full border border-[#e5e7eb] object-cover lg:h-10 lg:w-10"
+              />
+            ) : (
+              <div className="grid h-9 w-9 place-items-center rounded-full border border-[#e5e7eb] bg-[#f1f5f9] text-xs font-semibold text-[#072635] lg:h-10 lg:w-10">
+                JS
+              </div>
+            )}
             <div className="leading-tight">
               <p className="text-xs font-semibold text-[#072635]">
                 Dr. Jose Simmons

@@ -44,3 +44,19 @@ body {
 .dashboard-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #b3bcc8;
 }
+
+@keyframes premium-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.premium-fade-up {
+  animation: premium-fade-up 460ms ease-out both;
+}

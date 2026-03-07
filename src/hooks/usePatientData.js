@@ -1,54 +1,65 @@
-import { useEffect, useMemo, useState } from 'react'
-import { fetchAllPatients, pickJessicaTaylor } from '../services/api'
-import { formatDateLabel, mapChartData, mapPatientList } from '../utils/helpers'
-import respiratoryIcon from '../assets/icons/respiratory.svg'
-import temperatureIcon from '../assets/icons/temperature.svg'
-import heartIcon from '../assets/icons/heartbmp.svg'
+import { useEffect, useMemo, useState } from "react";
+import { fetchAllPatients } from "../services/api";
+import {
+  formatDateLabel,
+  mapChartData,
+  mapPatientList,
+} from "../utils/helpers";
+import respiratoryIcon from "../assets/icons/respiratory.svg";
+import temperatureIcon from "../assets/icons/temperature.svg";
+import heartIcon from "../assets/icons/heartbmp.svg";
 
-function usePatientData() {
-  const [patients, setPatients] = useState([])
-  const [selectedPatient, setSelectedPatient] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+function usePatientData(selectedPatientIndex = 0) {
+  const [allPatients, setAllPatients] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    let mounted = true
+    let mounted = true;
 
     async function loadData() {
       try {
-        const allPatients = await fetchAllPatients()
-        const jessica = pickJessicaTaylor(allPatients)
+        const patientResults = await fetchAllPatients();
 
         if (!mounted) {
-          return
+          return;
         }
 
-        setPatients(mapPatientList(allPatients))
-        setSelectedPatient(jessica)
+        setAllPatients(patientResults ?? []);
+        setPatients(mapPatientList(patientResults ?? []));
+        if (!patientResults?.length) {
+          setError("No patients available in API response.");
+        }
       } catch {
         if (mounted) {
-          setError('Unable to load patient dashboard data right now.')
+          setError("Unable to load patient dashboard data right now.");
         }
       } finally {
         if (mounted) {
-          setLoading(false)
+          setLoading(false);
         }
       }
     }
 
-    loadData()
+    loadData();
 
     return () => {
-      mounted = false
-    }
-  }, [])
+      mounted = false;
+    };
+  }, []);
+
+  const selectedPatient = useMemo(
+    () => allPatients?.[selectedPatientIndex] ?? null,
+    [allPatients, selectedPatientIndex]
+  );
 
   const mappedData = useMemo(() => {
     if (!selectedPatient) {
-      return null
+      return null;
     }
 
-    const latestDiagnosis = selectedPatient.diagnosis_history?.[0]
+    const latestDiagnosis = selectedPatient.diagnosis_history?.[0];
 
     return {
       profile: {
@@ -62,52 +73,54 @@ function usePatientData() {
       },
       chartData: mapChartData(selectedPatient.diagnosis_history ?? []),
       bpSummary: {
-        systolic: latestDiagnosis?.blood_pressure?.systolic?.value ?? 'N/A',
-        systolicLevel: latestDiagnosis?.blood_pressure?.systolic?.levels ?? 'Unknown',
-        diastolic: latestDiagnosis?.blood_pressure?.diastolic?.value ?? 'N/A',
-        diastolicLevel: latestDiagnosis?.blood_pressure?.diastolic?.levels ?? 'Unknown',
+        systolic: latestDiagnosis?.blood_pressure?.systolic?.value ?? "N/A",
+        systolicLevel:
+          latestDiagnosis?.blood_pressure?.systolic?.levels ?? "Unknown",
+        diastolic: latestDiagnosis?.blood_pressure?.diastolic?.value ?? "N/A",
+        diastolicLevel:
+          latestDiagnosis?.blood_pressure?.diastolic?.levels ?? "Unknown",
       },
       vitals: [
         {
-          id: 'respiratory-rate',
-          title: 'Respiratory Rate',
-          value: latestDiagnosis?.respiratory_rate?.value ?? 'N/A',
-          unit: 'bpm',
-          status: latestDiagnosis?.respiratory_rate?.levels ?? 'Unknown',
+          id: "respiratory-rate",
+          title: "Respiratory Rate",
+          value: latestDiagnosis?.respiratory_rate?.value ?? "N/A",
+          unit: "bpm",
+          status: latestDiagnosis?.respiratory_rate?.levels ?? "Unknown",
           iconPath: respiratoryIcon,
-          tone: 'bg-sky-50',
+          tone: "bg-sky-50",
         },
         {
-          id: 'temperature',
-          title: 'Temperature',
-          value: latestDiagnosis?.temperature?.value ?? 'N/A',
-          unit: 'deg F',
-          status: latestDiagnosis?.temperature?.levels ?? 'Unknown',
+          id: "temperature",
+          title: "Temperature",
+          value: latestDiagnosis?.temperature?.value ?? "N/A",
+          unit: "deg F",
+          status: latestDiagnosis?.temperature?.levels ?? "Unknown",
           iconPath: temperatureIcon,
-          tone: 'bg-rose-50',
+          tone: "bg-rose-50",
         },
         {
-          id: 'heart-rate',
-          title: 'Heart Rate',
-          value: latestDiagnosis?.heart_rate?.value ?? 'N/A',
-          unit: 'bpm',
-          status: latestDiagnosis?.heart_rate?.levels ?? 'Unknown',
+          id: "heart-rate",
+          title: "Heart Rate",
+          value: latestDiagnosis?.heart_rate?.value ?? "N/A",
+          unit: "bpm",
+          status: latestDiagnosis?.heart_rate?.levels ?? "Unknown",
           iconPath: heartIcon,
-          tone: 'bg-violet-50',
+          tone: "bg-violet-50",
         },
       ],
       diagnosticList: selectedPatient.diagnostic_list ?? [],
       labResults: selectedPatient.lab_results ?? [],
-    }
-  }, [selectedPatient])
+    };
+  }, [selectedPatient]);
 
   return {
     patients,
-    selectedPatientName: 'Jessica Taylor',
+    selectedPatientName: selectedPatient?.name ?? "",
     loading,
     error,
     dashboardData: mappedData,
-  }
+  };
 }
 
-export default usePatientData
+export default usePatientData;

@@ -6,10 +6,12 @@ import PatientProfile from "../components/PatientProfile";
 import DiagnosticTable from "../components/DiagnosticTable";
 import LabResultsPanel from "../components/LabResultsPanel";
 import usePatientData from "../hooks/usePatientData";
+import { useState } from "react";
 
 function Dashboard() {
+  const [selectedPatientIndex, setSelectedPatientIndex] = useState(0);
   const { patients, selectedPatientName, loading, error, dashboardData } =
-    usePatientData();
+    usePatientData(selectedPatientIndex);
 
   if (loading) {
     return (
@@ -37,6 +39,7 @@ function Dashboard() {
             <Sidebar
               patients={patients}
               selectedPatientName={selectedPatientName}
+              onPatientSelect={setSelectedPatientIndex}
             />
           </div>
 
