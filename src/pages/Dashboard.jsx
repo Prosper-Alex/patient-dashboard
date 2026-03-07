@@ -10,6 +10,7 @@ import { useState } from "react";
 
 function Dashboard() {
   const [selectedPatientIndex, setSelectedPatientIndex] = useState(0);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { patients, selectedPatientName, loading, error, dashboardData } =
     usePatientData(selectedPatientIndex);
 
@@ -34,12 +35,19 @@ function Dashboard() {
       <div className="mx-auto flex min-h-full w-full max-w-400 flex-col gap-3 lg:h-full lg:gap-4 lg:overflow-hidden">
         <TopNavbar doctorImage={dashboardData.profile.profileImage} />
 
-        <section className="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:gap-4 xl:grid-cols-[320px_minmax(0,1fr)_320px]">
+        <section
+          className={`grid min-h-0 flex-1 grid-cols-1 gap-3 transition-[grid-template-columns] duration-300 lg:gap-4 ${
+            isSidebarCollapsed
+              ? "xl:grid-cols-[96px_minmax(0,1fr)_320px]"
+              : "xl:grid-cols-[320px_minmax(0,1fr)_320px]"
+          }`}>
           <div className="min-h-0 xl:block">
             <Sidebar
               patients={patients}
               selectedPatientName={selectedPatientName}
               onPatientSelect={setSelectedPatientIndex}
+              collapsed={isSidebarCollapsed}
+              onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
             />
           </div>
 

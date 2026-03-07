@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react"
 import birthIcon from '../assets/icons/birthicon.svg'
 import femaleIcon from '../assets/icons/femaleicon.svg'
 import chatIcon from '../assets/icons/chatbubble.svg'
@@ -12,6 +13,13 @@ const infoRows = [
 ]
 
 function PatientProfile({ profile }) {
+  const [showAllInfo, setShowAllInfo] = useState(false)
+
+  const visibleRows = useMemo(
+    () => (showAllInfo ? infoRows : infoRows.slice(0, 3)),
+    [showAllInfo]
+  )
+
   return (
     <section className="rounded-2xl bg-white p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
       <div className="mb-5 flex flex-col items-center text-center">
@@ -24,7 +32,7 @@ function PatientProfile({ profile }) {
       </div>
 
       <ul className="space-y-4">
-        {infoRows.map((row) => (
+        {visibleRows.map((row) => (
           <li key={row.key} className="flex items-start gap-3">
             <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f6f7f8]">
               <img src={row.icon} alt="" className="h-[18px] w-[18px] object-contain" />
@@ -39,9 +47,10 @@ function PatientProfile({ profile }) {
 
       <button
         type="button"
+        onClick={() => setShowAllInfo((prev) => !prev)}
         className="mt-6 w-full rounded-full bg-[#01f0d0] py-2 text-xs font-bold text-[#072635]"
       >
-        Show All Information
+        {showAllInfo ? "Show Less Information" : "Show All Information"}
       </button>
     </section>
   )

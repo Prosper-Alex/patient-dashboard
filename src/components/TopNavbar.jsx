@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import calendarIcon from "../assets/icons/calendaricon.svg";
 import chatIcon from "../assets/icons/chatbubble.svg";
 import cardIcon from "../assets/icons/creditcard.svg";
@@ -5,6 +6,9 @@ import femaleIcon from "../assets/icons/femaleicon.svg";
 import settingIcon from "../assets/icons/settingicon.svg";
 import verticalDotIcon from "../assets/icons/verticaldot.svg";
 import homeIcon from "../assets/icons/home.svg";
+import downBoldIcon from "../assets/icons/downbold.svg";
+import upBoldIcon from "../assets/icons/upbold.svg";
+import doctorImg from "../assets/images/profile.png";
 
 const navItems = [
   { label: "Overview", icon: homeIcon, href: "/premium-overview" },
@@ -15,8 +19,26 @@ const navItems = [
 ];
 
 function TopNavbar({ doctorImage }) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+  const resolvedDoctorImage = doctorImage || doctorImg;
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "/";
+
+  useEffect(() => {
+    if (!isProfileOpen) {
+      return undefined;
+    }
+
+    const handleOutsideClick = (event) => {
+      if (!profileMenuRef.current?.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [isProfileOpen]);
 
   return (
     <header className="rounded-3xl bg-white px-3 py-2 shadow-[0_2px_10px_rgba(0,0,0,0.04)] sm:px-4 lg:h-[74px] lg:rounded-[70px] lg:px-5 lg:py-0">
@@ -58,33 +80,63 @@ function TopNavbar({ doctorImage }) {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          <div className="hidden items-center gap-2 md:flex">
-            {doctorImage ? (
+        <div className="relative" ref={profileMenuRef}>
+          <button
+            type="button"
+            onClick={() => setIsProfileOpen((prev) => !prev)}
+            className="flex items-center gap-2 rounded-full border border-[#e6ebef] bg-white px-2 py-1.5 transition hover:bg-[#f8fafc]"
+            aria-expanded={isProfileOpen}
+            aria-controls="profile-toggle-panel"
+            aria-label="Toggle profile actions">
+            <img
+              src={resolvedDoctorImage}
+              alt="Doctor profile"
+              className="h-9 w-9 rounded-full border border-[#e5e7eb] object-cover"
+            />
+            <img
+              src={isProfileOpen ? upBoldIcon : downBoldIcon}
+              alt=""
+              aria-hidden="true"
+              className="h-3.5 w-3.5"
+            />
+          </button>
+
+          <div
+            id="profile-toggle-panel"
+            className={`absolute top-[calc(100%+8px)] right-0 z-40 w-[235px] rounded-2xl border border-[#e6ebef] bg-white p-3 shadow-[0_18px_36px_rgba(7,38,53,0.12)] transition-all duration-200 ${
+              isProfileOpen
+                ? "pointer-events-auto translate-y-0 opacity-100"
+                : "pointer-events-none -translate-y-1 opacity-0"
+            }`}>
+            <div className="flex items-center gap-2.5">
               <img
-                src={doctorImage}
+                src={resolvedDoctorImage}
                 alt="Doctor profile"
-                className="h-9 w-9 rounded-full border border-[#e5e7eb] object-cover lg:h-10 lg:w-10"
+                className="h-10 w-10 rounded-full border border-[#e5e7eb] object-cover"
               />
-            ) : (
-              <div className="grid h-9 w-9 place-items-center rounded-full border border-[#e5e7eb] bg-[#f1f5f9] text-xs font-semibold text-[#072635] lg:h-10 lg:w-10">
-                JS
+              <div className="leading-tight">
+                <p className="text-xs font-semibold text-[#072635]">
+                  Dr. Jose Simmons
+                </p>
+                <p className="text-[11px] text-[#707070]">
+                  General Practitioner
+                </p>
               </div>
-            )}
-            <div className="leading-tight">
-              <p className="text-xs font-semibold text-[#072635]">
-                Dr. Jose Simmons
-              </p>
-              <p className="text-[11px] text-[#707070]">General Practitioner</p>
+            </div>
+
+            <div className="mt-3 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                className="rounded-full border border-[#e6ebef] p-2 hover:bg-[#f8fafc]">
+                <img src={settingIcon} alt="Settings" className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                className="rounded-full border border-[#e6ebef] p-2 hover:bg-[#f8fafc]">
+                <img src={verticalDotIcon} alt="Menu" className="h-4 w-4" />
+              </button>
             </div>
           </div>
-
-          <button type="button" className="rounded-full p-2 hover:bg-[#f8fafc]">
-            <img src={settingIcon} alt="Settings" className="h-4 w-4" />
-          </button>
-          <button type="button" className="rounded-full p-2 hover:bg-[#f8fafc]">
-            <img src={verticalDotIcon} alt="Menu" className="h-4 w-4" />
-          </button>
         </div>
       </div>
     </header>

@@ -1,10 +1,41 @@
+import { useEffect, useMemo, useState } from "react";
+import Odometer from "react-odometerjs";
+import "odometer/themes/odometer-theme-default.css";
 import TopNavbar from "../components/TopNavbar";
 
 const premiumMetrics = [
-  { label: "Monthly Revenue", value: "$128,940", delta: "+18.4%" },
-  { label: "Active Premium Users", value: "4,762", delta: "+9.1%" },
-  { label: "Retention Rate", value: "94.8%", delta: "+2.7%" },
-  { label: "Support SLA", value: "99.2%", delta: "+0.8%" },
+  {
+    label: "Monthly Revenue",
+    value: 128940,
+    prefix: "$",
+    suffix: "",
+    decimals: 0,
+    delta: "+18.4%",
+  },
+  {
+    label: "Active Premium Users",
+    value: 4762,
+    prefix: "",
+    suffix: "",
+    decimals: 0,
+    delta: "+9.1%",
+  },
+  {
+    label: "Retention Rate",
+    value: 94.8,
+    prefix: "",
+    suffix: "%",
+    decimals: 1,
+    delta: "+2.7%",
+  },
+  {
+    label: "Support SLA",
+    value: 99.2,
+    prefix: "",
+    suffix: "%",
+    decimals: 1,
+    delta: "+0.8%",
+  },
 ];
 
 const activityFeed = [
@@ -30,6 +61,30 @@ const planBreakdown = [
   { name: "Gold", share: 31, color: "#f7b42c" },
   { name: "Silver", share: 17, color: "#2ec4b6" },
 ];
+
+function MetricOdometer({ value, decimals, prefix, suffix }) {
+  const [animatedValue, setAnimatedValue] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimatedValue(value), 120);
+    return () => clearTimeout(timer);
+  }, [value]);
+
+  const format = useMemo(() => {
+    if (!decimals) {
+      return "(,ddd)";
+    }
+    return `(,ddd).${"d".repeat(decimals)}`;
+  }, [decimals]);
+
+  return (
+    <p className="mt-3 flex items-end text-3xl font-bold text-[#1f2a44]">
+      {prefix ? <span>{prefix}</span> : null}
+      <Odometer value={animatedValue} format={format} duration={1200} />
+      {suffix ? <span>{suffix}</span> : null}
+    </p>
+  );
+}
 
 function PremiumOverview() {
   return (
@@ -68,7 +123,12 @@ function PremiumOverview() {
             className="premium-fade-up rounded-2xl border border-white/80 bg-white/85 p-5 shadow-[0_14px_40px_rgba(23,40,87,0.10)]"
             style={{ animationDelay: `${index * 80}ms` }}>
             <p className="text-sm text-[#6d7386]">{metric.label}</p>
-            <p className="mt-3 text-3xl font-bold text-[#1f2a44]">{metric.value}</p>
+            <MetricOdometer
+              value={metric.value}
+              decimals={metric.decimals}
+              prefix={metric.prefix}
+              suffix={metric.suffix}
+            />
             <p className="mt-2 text-sm font-semibold text-[#ff7a18]">{metric.delta}</p>
           </article>
         ))}

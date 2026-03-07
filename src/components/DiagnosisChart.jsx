@@ -10,6 +10,7 @@ import {
 
 import arrowUpIcon from "../assets/icons/upbold.svg";
 import arrowDownIcon from "../assets/icons/downbold.svg";
+import OdometerValue from "./OdometerValue";
 const yAxisTicks = [60, 80, 100, 120, 140, 160, 180];
 
 function getTrendMeta(level = "") {
@@ -47,7 +48,7 @@ function SummaryStat({ label, color, value, level }) {
         {label}
       </p>
       <p className="mt-1 text-[30px] leading-none font-extrabold text-[#072635]">
-        {value}
+        <OdometerValue value={value} />
       </p>
       <p
         className={`mt-2 inline-flex items-center gap-1 whitespace-nowrap text-sm ${trend.color}`}>
