@@ -18,10 +18,9 @@ const navItems = [
   { label: "Transactions", icon: cardIcon },
 ];
 
-function TopNavbar({ doctorImage }) {
+function TopNavbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileMenuRef = useRef(null);
-  const resolvedDoctorImage = doctorImage || doctorImg;
   const currentPath =
     typeof window !== "undefined" ? window.location.pathname : "/";
 
@@ -89,7 +88,7 @@ function TopNavbar({ doctorImage }) {
             aria-controls="profile-toggle-panel"
             aria-label="Toggle profile actions">
             <img
-              src={resolvedDoctorImage}
+              src={doctorImg}
               alt="Doctor profile"
               className="h-9 w-9 rounded-full border border-[#e5e7eb] object-cover"
             />
@@ -110,7 +109,7 @@ function TopNavbar({ doctorImage }) {
             }`}>
             <div className="flex items-center gap-2.5">
               <img
-                src={resolvedDoctorImage}
+                src={doctorImg}
                 alt="Doctor profile"
                 className="h-10 w-10 rounded-full border border-[#e5e7eb] object-cover"
               />

@@ -33,7 +33,7 @@ function Dashboard() {
   return (
     <main className="min-h-screen w-full bg-[#f6f7f8] p-3 sm:p-4 lg:h-screen lg:overflow-hidden lg:p-5">
       <div className="mx-auto flex min-h-full w-full max-w-400 flex-col gap-3 lg:h-full lg:gap-4 lg:overflow-hidden">
-        <TopNavbar doctorImage={dashboardData.profile.profileImage} />
+        <TopNavbar />
 
         <section
           className={`grid min-h-0 flex-1 grid-cols-1 gap-3 transition-[grid-template-columns] duration-300 lg:gap-4 ${
