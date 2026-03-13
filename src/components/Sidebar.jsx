@@ -40,8 +40,10 @@ function Sidebar({
   return (
     <aside
       className={`flex h-full min-h-0 flex-col rounded-2xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all duration-300 ${
-        collapsed ? "p-2" : "p-4"
+        collapsed ? "w-20 p-2" : "w-full p-4"
       }`}>
+      
+      {/* Header Section */}
       <div
         className={`mb-3 flex items-center ${
           collapsed ? "justify-center" : "justify-between"
@@ -49,24 +51,27 @@ function Sidebar({
         {!collapsed ? <h2 className="text-2xl font-extrabold text-[#072635]">Patients</h2> : null}
       </div>
 
+      {/* Profile Toggle Button */}
       {selectedPatient ? (
         <button
           type="button"
           onClick={onToggleCollapse}
-          className={`mb-3 flex items-center rounded-xl border border-[#e6ebef] hover:bg-[#f8fafc] ${
-            collapsed ? "justify-center p-1.5" : "gap-3 px-2.5 py-2"
+          className={`mb-3 flex w-full items-center rounded-xl border border-[#e6ebef] transition-colors hover:bg-[#f8fafc] ${
+            collapsed ? "justify-center p-1.5" : "justify-between px-3 py-2"
           }`}
           aria-label={collapsed ? "Expand patient list" : "Collapse patient list"}>
-          <img
-            src={selectedPatient.profileImage}
-            alt={`${selectedPatient.name} profile`}
-            className="h-12 w-12 rounded-full object-cover"
-            loading="lazy"
-          />
+          
+          {/* Left Side: Avatar and Info Grouped */}
+          <div className="flex items-center gap-3 min-w-0">
+            <img
+              src={selectedPatient.profileImage}
+              alt={`${selectedPatient.name} profile`}
+              className="h-12 w-12 shrink-0 rounded-full object-cover"
+              loading="lazy"
+            />
 
-          {!collapsed ? (
-            <>
-              <div className="min-w-0 flex-1 text-left">
+            {!collapsed && (
+              <div className="min-w-0 text-left">
                 <p className="truncate text-sm font-semibold text-[#072635]">
                   {selectedPatient.name}
                 </p>
@@ -74,24 +79,20 @@ function Sidebar({
                   {selectedPatient.gender}, {selectedPatient.age}
                 </p>
               </div>
-              <img
-                src={upBoldIcon}
-                alt=""
-                aria-hidden="true"
-                className="h-3.5 w-3.5"
-              />
-            </>
-          ) : (
-            <img
-              src={downBoldIcon}
-              alt=""
-              aria-hidden="true"
-              className="h-3.5 w-3.5"
-            />
-          )}
+            )}
+          </div>
+
+          {/* Right Side: Toggle Icon */}
+          <img
+            src={collapsed ? downBoldIcon : upBoldIcon}
+            alt=""
+            aria-hidden="true"
+            className="h-3.5 w-3.5 shrink-0"
+          />
         </button>
       ) : null}
 
+      {/* Search Input Field */}
       {showSearch && !collapsed ? (
         <div className="mb-3 relative">
           <img
@@ -112,6 +113,7 @@ function Sidebar({
 
       {!collapsed ? (
         <>
+          {/* Search Toggle Icon */}
           <div className="mb-2 flex items-center justify-end">
             <button
               type="button"
@@ -122,34 +124,39 @@ function Sidebar({
             </button>
           </div>
 
+          {/* Patient List */}
           <ul className="dashboard-scrollbar min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
             {filteredPatients.map(({ patient, index }) => {
               const isSelected = patient.name === selectedPatientName;
 
               return (
                 <li
+                  key={patient.id}
                   onClick={() => {
                     onPatientSelect(index);
-                    onToggleCollapse?.();
+                    // Optional: auto-collapse on mobile after selection
+                    // onToggleCollapse?.(); 
                   }}
-                  key={patient.id}
-                  className={`flex items-center gap-3 rounded-xl px-2 py-2 ${
+                  className={`flex cursor-pointer items-center justify-between rounded-xl px-2 py-2 transition-colors ${
                     isSelected ? "bg-[#d8fcf7]" : "hover:bg-[#f8fafc]"
                   }`}>
-                  <img
-                    src={patient.profileImage}
-                    alt={`${patient.name} profile`}
-                    className="h-12 w-12 rounded-full object-cover"
-                    loading="lazy"
-                  />
+                  
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src={patient.profileImage}
+                      alt={`${patient.name} profile`}
+                      className="h-12 w-12 shrink-0 rounded-full object-cover"
+                      loading="lazy"
+                    />
 
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold text-[#072635]">
-                      {patient.name}
-                    </p>
-                    <p className="text-xs text-[#707070]">
-                      {patient.gender}, {patient.age}
-                    </p>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-[#072635]">
+                        {patient.name}
+                      </p>
+                      <p className="text-xs text-[#707070]">
+                        {patient.gender}, {patient.age}
+                      </p>
+                    </div>
                   </div>
 
                   <button type="button" className="rounded-md p-1 hover:bg-white/70">
