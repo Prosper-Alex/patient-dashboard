@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   CartesianGrid,
   Line,
@@ -11,7 +12,6 @@ import {
 import arrowUpIcon from "../assets/icons/upbold.svg";
 import arrowDownIcon from "../assets/icons/downbold.svg";
 import OdometerValue from "./OdometerValue";
-const yAxisTicks = [60, 80, 100, 120, 140, 160, 180];
 
 function getTrendMeta(level = "") {
   const normalized = level.toLowerCase();
@@ -66,7 +66,32 @@ function SummaryStat({ label, color, value, level }) {
 }
 
 function DiagnosisChart({ chartData, bpSummary }) {
-  const latestPoint = chartData.at(-1);
+  const [range, setRange] = useState("6m");
+  const [isRangeOpen, setIsRangeOpen] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setRange("6m");
+    setIsRangeOpen(false);
+  }, [chartData]);
+  const filteredData = range === "1m" ? chartData.slice(-1) : chartData;
+  const latestPoint = filteredData.at(-1);
+  const yValues = filteredData.flatMap((point) => [
+    point.systolic,
+    point.diastolic,
+  ]);
+  const minY =
+    yValues.length > 0
+      ? Math.max(40, Math.floor(Math.min(...yValues) / 10) * 10)
+      : 60;
+  const maxY =
+    yValues.length > 0
+      ? Math.min(200, Math.ceil(Math.max(...yValues) / 10) * 10)
+      : 180;
+  const yStep = Math.max(10, Math.round((maxY - minY) / 6));
+  const yAxisTicks = Array.from(
+    { length: Math.floor((maxY - minY) / yStep) + 1 },
+    (_, index) => minY + index * yStep,
+  );
   const summary = bpSummary ?? {
     systolic: latestPoint?.systolic ?? "N/A",
     systolicLevel: latestPoint?.systolicLevel ?? "Unknown",
@@ -83,21 +108,53 @@ function DiagnosisChart({ chartData, bpSummary }) {
       <div className="mt-4 rounded-xl bg-[#f4f0fe] p-4 md:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <p className="text-[22px] font-bold text-[#072635]">Blood Pressure</p>
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 text-sm text-[#072635]">
-            <span>Last 6 months</span>
-            <span aria-hidden="true" className="text-xs">
-              ▼
-            </span>
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsRangeOpen((prev) => !prev)}
+              className="inline-flex items-center gap-2 rounded-full border border-[#e6ebef] bg-white px-3 py-1 text-sm text-[#072635] shadow-sm"
+              aria-expanded={isRangeOpen}
+              aria-haspopup="listbox">
+              <span>{range === "1m" ? "Last 1 month" : "Last 6 months"}</span>
+              <span aria-hidden="true" className="text-xs">
+                ▼
+              </span>
+            </button>
+            {isRangeOpen ? (
+              <div
+                role="listbox"
+                className="absolute right-0 top-[calc(100%+6px)] z-10 w-40 rounded-xl border border-[#e6ebef] bg-white p-1 shadow-[0_10px_24px_rgba(0,0,0,0.08)]">
+                {[
+                  { id: "1m", label: "Last 1 month" },
+                  { id: "6m", label: "Last 6 months" },
+                ].map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    role="option"
+                    aria-selected={range === option.id}
+                    onClick={() => {
+                      setRange(option.id);
+                      setIsRangeOpen(false);
+                    }}
+                    className={`w-full rounded-lg px-3 py-2 text-left text-sm ${
+                      range === option.id
+                        ? "bg-[#f1f5f9] font-semibold text-[#072635]"
+                        : "text-[#4b5563] hover:bg-[#f8fafc]"
+                    }`}>
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className="flex flex-col gap-4 md:flex-row md:gap-6">
           <div className="h-64 w-full min-w-0 md:flex-1">
             <ResponsiveContainer>
               <LineChart
-                data={chartData}
+                data={filteredData}
                 margin={{ top: 8, right: 4, left: -18, bottom: 4 }}>
                 <CartesianGrid stroke="#ded7f5" vertical={false} />
                 <XAxis
@@ -112,7 +169,7 @@ function DiagnosisChart({ chartData, bpSummary }) {
                   axisLine={false}
                   tickLine={false}
                   ticks={yAxisTicks}
-                  domain={[60, 180]}
+                  domain={[minY, maxY]}
                   width={34}
                 />
                 <Tooltip

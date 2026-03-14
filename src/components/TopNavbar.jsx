@@ -13,9 +13,9 @@ import doctorImg from "../assets/images/profile.png";
 const navItems = [
   { label: "Overview", icon: homeIcon, href: "/premium-overview" },
   { label: "Patients", icon: femaleIcon, href: "/" },
-  { label: "Schedule", icon: calendarIcon },
-  { label: "Message", icon: chatIcon },
-  { label: "Transactions", icon: cardIcon },
+  { label: "Schedule", icon: calendarIcon, href: "/schedule" },
+  { label: "Message", icon: chatIcon, href: "/messages" },
+  { label: "Transactions", icon: cardIcon, href: "/transactions" },
 ];
 
 function TopNavbar() {
@@ -43,11 +43,13 @@ function TopNavbar() {
     <header className="rounded-3xl bg-white px-3 py-2 shadow-[0_2px_10px_rgba(0,0,0,0.04)] sm:px-4 lg:h-[74px] lg:rounded-[70px] lg:px-5 lg:py-0">
       <div className="flex h-full flex-wrap items-center justify-between gap-2 lg:grid lg:grid-cols-[auto_1fr_auto] lg:gap-3">
         <div className="flex min-w-0 items-center gap-3 sm:gap-6 lg:gap-8">
-          <img
-            src="/testcare.svg"
-            alt="Tech.Care"
-            className="h-7 w-auto shrink-0 sm:h-8"
-          />
+          <a href="/" className="shrink-0">
+            <img
+              src="/testcare.svg"
+              alt="Tech.Care"
+              className="h-7 w-auto sm:h-8"
+            />
+          </a>
         </div>
 
         <nav className="hidden xl:flex xl:justify-center">
